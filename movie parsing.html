@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +10,7 @@
             font-family: 'Darker Grotesque', sans-serif;
             font-weight: 500;
             background: #F8F7FF;
+            margin: 0;
         }
         #searchForm{
             border: 1px solid   grey;
@@ -41,6 +43,27 @@
             margin-left: 50%;
             margin-bottom: 10px;
         }
+
+        .nav_item{
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .navigation{
+            margin: 0 auto;
+            width: fit-content;
+        }
+
+        .film_info__block{
+            width: max-content;
+            border: 1px solid gray;
+            border-radius: 5px;
+            display: inline-flex;
+        }
+
+        .film_info__title{
+            align-content: center;
+        }
     </style>
 </head>
 <body>
@@ -51,98 +74,217 @@
     <label for="type">Type</label>
     <select name="type" id="type">
         <option value="movie" id="movie">Movie</option>
-        <option value="Series" id="series">Series</option>
-        <option value="Episode" id="episode">Episode</option>
+        <option value="series" id="series">Series</option>
+        <option value="episode" id="episode">Episode</option>
     </select><br>
     <input type="submit" value="Search" id="submit" name="submit">
 </form>
-
-<!--<form class="filmsDiv" style="width: max-content; display: flex; border: 1px solid black">-->
-    <!--<div><img src="" alt="img" style="width:100%; height: auto; "></div>-->
-    <!--<div style="margin-left: 25%; width: 100px">-->
-        <!--<span>Title</span>-->
-        <!--<br>-->
-        <!--<div>Type</div>-->
-        <!--<br>-->
-        <!--<div>Year</div>-->
-    <!--</div>-->
-
-
-<!--</form>-->
-
-
+<div class="film_info__title">
+    <p style="position: center">Film info:</p>
+    <div class="film_info__block">
+        <div class="film_info__poster">
+            <img src="" alt="poster">
+        </div>
+        <div class="film_info__info">
+            <label for="file_info__title">Title:</label>
+            <span class="file_info__title" name="file_info__title"></span>
+            <br>
+            <label for="file_info__released">Released:</label>
+            <span class="file_info__released" name="file_info__released"></span>
+            <br>
+            <label for="file_info__genre">Genre:</label>
+            <span class="file_info__genre" name="file_info__genre"></span>
+            <br>
+            <label for="file_info__country">Country:</label>
+            <span class="file_info__country" name="file_info__country"></span>
+            <br>
+            <label for="file_info__director">Director:</label>
+            <span class="file_info__director" name="file_info__director"></span>
+            <br>
+            <label for="file_info__actors">Actors:</label>
+            <span class="file_info__actors" name="file_info__actors"></span>
+            <br>
+            <label for="file_info__awards">Awards:</label>
+            <span class="file_info__awards" name="file_info__awards"></span>
+        </div>
+    </div>
+</div>
 <script>
+
+    //test
+    let testElement=document.querySelector('.film_info__title');
+    let newTest=testElement.cloneNode(true);
+    let file_info__title = newTest.querySelector('.file_info__title');
+    let file_info__released = newTest.querySelector('.file_info__released');
+    let file_info__genre = newTest.querySelector('.file_info__genre');
+    let file_info__country = newTest.querySelector('.file_info__country');
+    let file_info__director = newTest.querySelector('.file_info__director');
+    let file_info__actors = newTest.querySelector('.file_info__actors');
+    let file_info__awards = newTest.querySelector('.file_info__awards');
+    //
+
+    let current_page=1;
+    let amountOfPages;
+    //----form for print
+    let filmsdiv=document.createElement('div');
+    filmsdiv.className='films';
+    filmsdiv.innerText='Films:';
+    filmsdiv.style.marginLeft='50%';
+    filmsdiv.style.marginTop='10px';
+    //----end form for print
+
+    //----navigation
+    let formNav=document.createElement('form');
+    formNav.setAttribute('class', 'navigation');
+    let first_nav=document.createElement('input');
+    let before_nav=document.createElement('input');
+    let current_nav=document.createElement('input');
+    let next_nav=document.createElement('input');
+    let last_nav=document.createElement('input');
+    first_nav.type='button';
+    before_nav.type='button';
+    current_nav.type='button';
+    next_nav.type='button';
+    last_nav.type='button';
+    first_nav.setAttribute('class', 'nav_item');
+    before_nav.setAttribute('class', 'nav_item');
+    current_nav.setAttribute('class', 'nav_item');
+    next_nav.setAttribute('class', 'nav_item');
+    last_nav.setAttribute('class', 'nav_item');
+
+    first_nav.value='<<';
+    before_nav.value='1';
+    current_nav.value='2';
+    next_nav.value='3';
+    last_nav.value='>>';
+
+    formNav.appendChild(first_nav);
+    formNav.appendChild(before_nav);
+    formNav.appendChild(current_nav);
+    formNav.appendChild(next_nav);
+    formNav.appendChild(last_nav);
+    //-----end navigation
+
     document.search_Form.submit.addEventListener('click', ()=>{
         event.preventDefault();
 
         let title=document.search_Form.title.value;
         let type=document.search_Form.type.value;
-
         let xhr=new XMLHttpRequest();
-        //form for print
-        let formFilm=document.createElement('form');
-        formFilm.style.width='max-content';
-        formFilm.style.display='flex';
-        formFilm.style.border='1px solid grey';
-        formFilm.style.borderRadius='5px';
 
-        let divImg=document.createElement('div');
-        let imgPoster=document.createElement('img');
-        imgPoster.style.width='150px';
-        divImg.appendChild(imgPoster);
+        let divNavMovies=document.createElement('div');
+        divNavMovies.style.alignContent='center';
 
-        let divInfo=document.createElement('div');
-        divInfo.style.marginLeft='25%';
-        divInfo.style.width='100px';
-
-        let spanType=document.createElement('div');
-        let spanTitle=document.createElement('div');
-        let br=document.createElement('br');
-        let spanYear=document.createElement('div');
-        let buttonDetails=document.createElement('input');
-        buttonDetails.type='submit';
-        buttonDetails.value='Details';
-        divInfo.appendChild(spanType);
-        divInfo.appendChild(br);
-        divInfo.appendChild(spanTitle);
-        divInfo.appendChild(br);
-        divInfo.appendChild(spanYear);
-        divInfo.appendChild(br);
-        divInfo.appendChild(buttonDetails);
-
-        formFilm.appendChild(divImg);
-        formFilm.appendChild(divInfo);
-
-
-
-        //
-
+        //-----request
         xhr.open("GET",`http://www.omdbapi.com/?apikey=dc489c9e&s=${title}&type=${type}`, true );
         xhr.send();
-        let filmsdiv=document.createElement('div');
-        filmsdiv.className='films';
-        filmsdiv.innerText='Films:';
-        filmsdiv.style.marginLeft='50%';
-        filmsdiv.style.marginTop='10px';
-        document.body.appendChild(filmsdiv);
+        //----//
+
+        if(document.querySelector('.films')==undefined){
+            document.body.appendChild(filmsdiv);
+            let clear=document.createElement('div');
+            clear.style.clear='both';
+            document.body.appendChild(clear);
+        }
+        //divNavMovies.style.position='relative';
+        document.body.appendChild(divNavMovies);
+        let divCenterMovies=document.createElement('div');
+        divCenterMovies.style.width='content-box';
+       //divCenterMovies.style.position='absolute';
+        divCenterMovies.style.top='50%';
+        divCenterMovies.style.left='50%';
+        //divCenterMovies.style.marginRight='-16%';
+        //divCenterMovies.style.transform='translate(-50%, 0)';
+        divNavMovies.appendChild(divCenterMovies);
+        document.body.appendChild(formNav);
+        let formFilm,divImg,imgPoster,divInfo,spanType,spanTitle,spanYear,buttonDetails;
         xhr.onreadystatechange=()=>{
             if(xhr.readyState!=4){ return;}
             if(xhr.status!=200){
                 console.log(`${xhr.status}:${xhr.statusText}`);
             }else{
+                amountOfPages=parseInt((JSON.parse((xhr.responseText))['totalResults']));
                 let temp=(JSON.parse(xhr.responseText))['Search'];
 
-                    // console.log(temp[0].Title);
-                imgPoster.src=temp[0].Poster;
-                spanType.innerText=type;
-                spanTitle.innerText=temp[0].Title;
-                spanYear.innerText=temp[0].Year;
+                for(let i=0;i<10;i++){
+                    //------form with poster and info about one
+                    formFilm=document.createElement('form');
+                    formFilm.style.width='max-content';
+                    formFilm.style.display='inline-flex';
+                    formFilm.style.justifyContent='space-between';
+                    formFilm.style.marginLeft='10px';
+                    formFilm.style.marginBottom='10px';
+                    formFilm.style.border='1px solid grey';
+                    formFilm.style.borderRadius='5px';
+                    formFilm.style.padding='10px'
 
+                    divImg=document.createElement('div');
+                    imgPoster=document.createElement('img');
+                    imgPoster.style.width='100px';
+                    imgPoster.style.height='150px';
+                    imgPoster.style.position='center';
+                    divImg.appendChild(imgPoster);
 
-                document.body.appendChild(formFilm);
+                    divInfo=document.createElement('div');
+                    divInfo.style.width='150px';
+                    divInfo.style.marginLeft='10px';
+
+                    spanType=document.createElement('div');
+                    spanTitle=document.createElement('div');
+                    spanTitle.style.fontWeight='700';
+                    spanTitle.style.marginBottom='5px';
+                    let br=document.createElement('br');
+                    spanYear=document.createElement('div');
+                    buttonDetails=document.createElement('input');
+                    buttonDetails.type='button';
+                    buttonDetails.value='Details';
+                    buttonDetails.style.borderRadius='5px';
+                    buttonDetails.style.position='center';
+                    buttonDetails.style.width='100%';
+                    buttonDetails.style.bottom='0';
+                    divInfo.appendChild(spanType);
+                    divInfo.appendChild(br);
+                    divInfo.appendChild(spanTitle);
+                    divInfo.appendChild(br);
+                    divInfo.appendChild(spanYear);
+                    divInfo.appendChild(br);
+                    divInfo.appendChild(buttonDetails);
+
+                    formFilm.appendChild(divImg);
+                    formFilm.appendChild(divInfo);
+                    imgPoster.src=temp[i].Poster;
+                    spanType.innerText=type;
+                    spanTitle.innerText=temp[i].Title;
+                    spanYear.innerText=temp[i].Year;
+                    buttonDetails.setAttribute('name', temp[i].imdbID);
+                    divCenterMovies.appendChild(formFilm);
+                    ///------//
+                }
+                if(current_page>2){
+                    current_nav.value=current_page;
+                    before_nav.value=current_page-1;
+                    next_nav.value=current_page+1;
+                }
+
             }
         }
-    })
+
+        buttonDetails.onclick=function () {
+            let idRec=new XMLHttpRequest();
+            idRec.open("GET",`http://www.omdbapi.com/?apikey=dc489c9e&i=${buttonDetails.name}&plot=full`, true);
+            idRec.send();
+            idRec.onreadystatechange=()=>{
+                if(idRec.readyState!=4){ return;}
+                if(idRec.status!=200){
+                    console.log(`${idRec.status}:${idRec.statusText}`);
+                }else {
+                    let temp=(JSON.parse(idRec.responseText));
+                }
+            }
+            document.body.appendChild(newTest);
+        }
+
+    });
 </script>
 </body>
 </html>

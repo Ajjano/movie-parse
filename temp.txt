@@ -1,0 +1,46 @@
+<div class="first" >
+    <div class="second" style="width: content-box; position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)">
+        <form class="filmsDiv" style="width: max-content; display: inline-flex; border: 1px solid black">
+            <div><img src="" alt="img" style="width:100%; height: auto; "></div>
+            <div style="margin-left: 25%; width: 100px">
+                <span>Title</span>
+                <br>
+                <div>Type</div>
+                <br>
+                <div>Year</div>
+            </div>
+
+
+        </form>
+
+        <form class="filmsDiv" style="width: max-content; display: inline-flex; border: 1px solid black">
+            <div><img src="" alt="img" style="width:100%; height: auto; "></div>
+            <div style="margin-left: 25%; width: 100px">
+                <span>Title</span>
+                <br>
+                <div>Type</div>
+                <br>
+                <div>Year</div>
+            </div>
+
+
+        </form>
+
+        <form class="filmsDiv" style="width: max-content; display: inline-flex; border: 1px solid black">
+            <div><img src="" alt="img" style="width:100%; height: auto; "></div>
+            <div style="margin-left: 25%; width: 100px">
+                <span>Title</span>
+                <br>
+                <div>Type</div>
+                <br>
+                <div>Year</div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
