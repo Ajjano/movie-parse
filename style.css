@@ -1,0 +1,58 @@
+*{
+    font-family: 'Darker Grotesque', sans-serif;
+    font-weight: 500;
+    background: #F8F7FF;
+    margin: 0;
+}
+#searchForm{
+    border: 1px solid   grey;
+    border-radius: 5px;
+    padding: 20px;
+    width: 213px;
+    margin: 0 auto;
+}
+
+#title{
+    margin-bottom: 10px;
+    margin-left: 21px;
+    border-radius: 5px;
+    width: 157px;
+}
+
+#type{
+    margin-bottom: 10px;
+    margin-left: 14px;
+    border-radius: 5px;
+    width: 160px;
+}
+
+#submit{
+    width: 206px;
+    border-radius: 5px;
+}
+
+.search{
+    margin-left: 50%;
+    margin-bottom: 10px;
+}
+
+.nav_item{
+    width: 30px;
+    border-radius: 5px;
+}
+
+.navigation{
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.film_info__block{
+    width: max-content;
+    border: 1px solid gray;
+    border-radius: 5px;
+    display: inline-flex;
+}
+
+.film_info__title{
+    align-content: center;
+}

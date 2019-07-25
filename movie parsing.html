@@ -5,66 +5,7 @@
     <meta charset="UTF-8">
     <title>Movie parsing</title>
     <link href="https://fonts.googleapis.com/css?family=Darker+Grotesque:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
-    <style>
-        *{
-            font-family: 'Darker Grotesque', sans-serif;
-            font-weight: 500;
-            background: #F8F7FF;
-            margin: 0;
-        }
-        #searchForm{
-            border: 1px solid   grey;
-            border-radius: 5px;
-            padding: 20px;
-            width: 213px;
-            margin: 0 auto;
-        }
-
-        #title{
-            margin-bottom: 10px;
-            margin-left: 21px;
-            border-radius: 5px;
-            width: 157px;
-        }
-
-        #type{
-            margin-bottom: 10px;
-            margin-left: 14px;
-            border-radius: 5px;
-            width: 160px;
-        }
-
-        #submit{
-            width: 206px;
-            border-radius: 5px;
-        }
-
-        .search{
-            margin-left: 50%;
-            margin-bottom: 10px;
-        }
-
-        .nav_item{
-            width: 30px;
-            border-radius: 5px;
-        }
-
-        .navigation{
-            margin: 0 auto;
-            width: fit-content;
-        }
-
-        .film_info__block{
-            width: max-content;
-            border: 1px solid gray;
-            border-radius: 5px;
-            display: inline-flex;
-        }
-
-        .film_info__title{
-            align-content: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="search">Search</div>
@@ -114,6 +55,7 @@
     //test
     let testElement=document.querySelector('.film_info__title');
     let newTest=testElement.cloneNode(true);
+    document.body.removeChild(testElement);
     let file_info__title = newTest.querySelector('.file_info__title');
     let file_info__released = newTest.querySelector('.file_info__released');
     let file_info__genre = newTest.querySelector('.file_info__genre');
@@ -170,12 +112,13 @@
 
         let title=document.search_Form.title.value;
         let type=document.search_Form.type.value;
-        let xhr=new XMLHttpRequest();
+
 
         let divNavMovies=document.createElement('div');
         divNavMovies.style.alignContent='center';
 
         //-----request
+        let xhr=new XMLHttpRequest();
         xhr.open("GET",`http://www.omdbapi.com/?apikey=dc489c9e&s=${title}&type=${type}`, true );
         xhr.send();
         //----//
@@ -189,10 +132,13 @@
         //divNavMovies.style.position='relative';
         document.body.appendChild(divNavMovies);
         let divCenterMovies=document.createElement('div');
-        divCenterMovies.style.width='content-box';
+        divCenterMovies.style.width='80%';
+        divCenterMovies.style.display='flex';
+        divCenterMovies.style.justifyContent='space-around';
+        divCenterMovies.style.flexWrap='wrap';
+
        //divCenterMovies.style.position='absolute';
-        divCenterMovies.style.top='50%';
-        divCenterMovies.style.left='50%';
+        divCenterMovies.style.margin='0 auto';
         //divCenterMovies.style.marginRight='-16%';
         //divCenterMovies.style.transform='translate(-50%, 0)';
         divNavMovies.appendChild(divCenterMovies);
@@ -205,6 +151,7 @@
             }else{
                 amountOfPages=parseInt((JSON.parse((xhr.responseText))['totalResults']));
                 let temp=(JSON.parse(xhr.responseText))['Search'];
+                console.log(temp);
 
                 for(let i=0;i<10;i++){
                     //------form with poster and info about one
@@ -223,6 +170,7 @@
                     imgPoster.style.width='100px';
                     imgPoster.style.height='150px';
                     imgPoster.style.position='center';
+                    imgPoster.setAttribute('alt', 'no poster');
                     divImg.appendChild(imgPoster);
 
                     divInfo=document.createElement('div');
@@ -242,6 +190,7 @@
                     buttonDetails.style.position='center';
                     buttonDetails.style.width='100%';
                     buttonDetails.style.bottom='0';
+                    buttonDetails.setAttribute('class', 'buttonDetail');
                     divInfo.appendChild(spanType);
                     divInfo.appendChild(br);
                     divInfo.appendChild(spanTitle);
@@ -252,7 +201,10 @@
 
                     formFilm.appendChild(divImg);
                     formFilm.appendChild(divInfo);
-                    imgPoster.src=temp[i].Poster;
+                    imgPoster.src=temp[i].Poster.replace('http://', 'https://');
+                    if(temp[i].Poster=='N/A'){
+                        imgPoster.src='http://www.adaptacolor.com/images/img_z3.png';
+                    }
                     spanType.innerText=type;
                     spanTitle.innerText=temp[i].Title;
                     spanYear.innerText=temp[i].Year;
@@ -267,23 +219,45 @@
                 }
 
             }
-        }
+            first_nav.addEventListener('click', ()=>{
+                current_page=1;
+                //requestNew(xhr,current_page);
+            })
+            before_nav.addEventListener('click',()=>{
+                current_page--;
+                //requestNew(xhr,current_page);
+            })
+            next_nav.addEventListener('click',()=>{
+                current_page++;
+                xhr.open("GET",`http://www.omdbapi.com/?apikey=dc489c9e&s=${title}&type=${type}&page=${current_page}`, true );
+                xhr.send();
+                //requestNew(xhr,current_page);
+            })
+            last_nav.addEventListener('click',()=>{
+                current_page=amountOfPages+1;
+                //requestNew(xhr,current_page);
+            })
+            let buttons=document.querySelectorAll('.buttonDetail');
 
-        buttonDetails.onclick=function () {
-            let idRec=new XMLHttpRequest();
-            idRec.open("GET",`http://www.omdbapi.com/?apikey=dc489c9e&i=${buttonDetails.name}&plot=full`, true);
-            idRec.send();
-            idRec.onreadystatechange=()=>{
-                if(idRec.readyState!=4){ return;}
-                if(idRec.status!=200){
-                    console.log(`${idRec.status}:${idRec.statusText}`);
-                }else {
-                    let temp=(JSON.parse(idRec.responseText));
-                }
-            }
-            document.body.appendChild(newTest);
-        }
+            buttons.forEach((value)=>{
+                value.addEventListener('click', ()=>{
+                    let idRec=new XMLHttpRequest();
+                    idRec.open("GET",`http://www.omdbapi.com/?apikey=dc489c9e&i=${value.name}&plot=shot`, true);
+                    idRec.send();
+                    idRec.onreadystatechange=()=>{
+                        if(idRec.readyState!=4){ return;}
+                        if(idRec.status!=200){
+                            console.log(`${idRec.status}:${idRec.statusText}`);
+                        }else {
+                            let temp=(JSON.parse(idRec.responseText));
+                        }
+                    }
+                    document.body.appendChild(newTest);
+                })
+            })
 
+                /**/
+        }
     });
 </script>
 </body>
